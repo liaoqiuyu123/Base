@@ -51,6 +51,7 @@ function Base(){
 
 	  return this
 }*/
+//获取DOM节点文本或者改变节点文本
 Base.prototype.setinnerHTML=function(str){
    
 	for(i=0;i<this.elements.length;i++){
@@ -63,11 +64,15 @@ Base.prototype.setinnerHTML=function(str){
 	  return this
 }
 
-//设置css样式，如字体。背景色
+//设置css样式，如字体。背景色及获取css样式
 Base.prototype.setcss=function(attr,value){
 	for(i=0;i<this.elements.length;i++){
 		if(arguments.length==1){
-			return this.elements[i].style[attr];
+			if(typeof window.getComputedStyle!='undefined'){ //w3c获取
+			   return window.getComputedStyle(this.elements[i],null)[attr];}
+			else if(typeof this.elements[i].ieStyle!='undefined'){//Ie获取
+				return this.elements[i].ieStyle[attr];
+			}	
 		}
 	this.elements[i].style[attr]=value;
 	}
@@ -94,8 +99,24 @@ Base.prototype.mourse=function(fn,value){
   return this
 	
 }
-Base.prototype.getstyle=function(attr,value){
-	
+
+//获取页面全部classname
+Base.prototype.getclass=function(className){
+	var allclass=document.getElementsByTagName('*');
+	for(var i=0;i<allclass.length;i++){
+		if(allclass[i].className==className){  //检索classname相同的节点
+		this.elements.push(allclass[i]);         //节点相同放入this.elements[];
+	}
+	}
+	return this
+}
+
+//相同classname节点来设置不同样式
+Base.prototype.getelement=function(num){
+	var element=this.elements[num];//将获取到classname节点暂存到element;
+	this.elements=[];//清空this.elements[]数组
+	this.elements[0]=element; 
+	return this;
 }
 Base.prototype.show=function(){
 	
